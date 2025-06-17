@@ -1,0 +1,27 @@
+.footer{
+  color: #d9d9d9;
+  background-color: #323232;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 8vw;
+  padding-top: 80px;
+  margin-top: 50px;
+}
+
+.footer-content{
+  width: 100%;
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr;
+
+}
+.footer-content-left,.footer-content-center,.footer-content-right{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 20px;
+}
+.footer-content-left,.footer-content-center,.footer-content-right{
+  list-style: none;
+}

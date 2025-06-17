@@ -62,7 +62,7 @@
 .navbar-menu li:after{
   content: '';
   position: absolute;
-  background-color: tomato;
+  background-color: #521C0D;
   height: 2px;
   width: 8px;
   left: 0;
@@ -80,7 +80,7 @@
 }
 
 .navbar-basket-icon .dot{
-  background-color: tomato;
+  background-color: #D5451B;
   width: 10px;
   height: 10px;
   border-radius: 50%;

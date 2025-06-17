@@ -1,0 +1,34 @@
+.header{
+  background: url('../../../header_img.png');
+  height: 34vw;
+  margin: 30px auto;
+  background-size: contain;
+  position: relative;
+}
+
+.header-content{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 1.5vw;
+  max-width: 50%;
+  bottom: 10%;
+  left: 6vw;
+  animation: fadeIn 3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.header-content h3{
+  font-size: 32px;
+  font-weight: 500;
+  color: white;
+}
+
+.header-content button{
+  border: none;
+  color: #F4E7E1;
+  background-color: #521C0D;
+  padding: 1vw 2.3vw;
+  font-size: max(1vw,13px);
+  border-radius: 30px;
+}
