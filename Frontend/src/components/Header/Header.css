@@ -2,8 +2,9 @@
   background: url('../../../header_img.png');
   height: 34vw;
   margin: 30px auto;
-  background-size: contain;
+  background-size: cover;
   position: relative;
+  border-radius: 20px;
 }
 
 .header-content{
