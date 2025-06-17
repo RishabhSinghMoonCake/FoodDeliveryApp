@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import './navbar.css'
 import { assets } from '../../assets/frontend_assets/assets.js'
+import {Link} from 'react-router'
 
 const Navbar = () => {
 
@@ -13,12 +14,12 @@ const Navbar = () => {
 
   return (
     <header className='navbar'>
-      <img src={assets.logo} alt="logo" />
+      <img className='logo' src={assets.logo} alt="logo" />
       <ul className="navbar-menu">
-        <li>home</li>
-        <li>menu</li>
-        <li>mobile-app</li>
-        <li>contact us</li>
+        <Link to='/'>home</Link>
+        <a href='#explore-menu'>menu</a>
+        <a href='#app-download'>mobile-app</a>
+        <a href='#footer'>contact us</a>
       </ul>
       <div className="navbar-right">
         <img src={assets.search_icon} alt="" />

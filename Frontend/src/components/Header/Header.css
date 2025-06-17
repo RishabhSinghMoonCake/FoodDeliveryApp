@@ -33,3 +33,39 @@
   font-size: max(1vw,13px);
   border-radius: 30px;
 }
+
+
+@media (max-width:1050px)
+{
+  .header{
+    height: 38vw;
+
+  }
+
+  .header-contents{
+    max-width: 45%;
+  }
+}
+
+@media (max-width:900px)
+{
+
+  .header-content{
+    max-width: 55%;
+  }
+
+  .header-content h3{
+    font-size: large;
+  }
+
+  .header-content button{
+    padding: 2vw 4vw;
+  }
+}
+
+@media (max-width:750px)
+{
+  .navbar-menu{
+    display: none;
+  }
+}

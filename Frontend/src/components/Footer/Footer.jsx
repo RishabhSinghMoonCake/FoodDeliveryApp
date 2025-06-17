@@ -3,11 +3,11 @@ import './Footer.css'
 import { assets } from '../../assets/frontend_assets/assets'
 const Footer = () => {
   return (
-    <div className='footer'>
+    <div className='footer' id='footer'>
       <div className="footer-content">
         <div className="footer-content-left">
           <img src={assets.logo} alt="" />
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore similique non tenetur illum quibusdam, reiciendis quisquam, ullam asperiores dolorum eligendi vitae corrupti blanditiis quas eum impedit odit ut quos eaque!</p>
+          <h5>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore similique non tenetur illum quibusdam, reiciendis quisquam, ullam asperiores dolorum eligendi vitae corrupti blanditiis quas eum impedit odit ut quos eaque!</h5>
           <div className="footer-social-icons">
             <img src={assets.facebook_icon} />
             <img src={assets.twitter_icon} />
