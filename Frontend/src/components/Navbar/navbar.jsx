@@ -3,7 +3,7 @@ import './navbar.css'
 import { assets } from '../../assets/frontend_assets/assets.js'
 import {Link} from 'react-router'
 
-const Navbar = () => {
+const Navbar = ({setShowLogin}) => {
 
   const [basketIconActive, setBasketIconActive] = useState(false)
 
@@ -29,7 +29,7 @@ const Navbar = () => {
 
           </div>
         </div>
-        <button>sign in</button>
+        <button onClick={()=>setShowLogin(true)}>sign in</button>
       </div>
     </header>
   )
