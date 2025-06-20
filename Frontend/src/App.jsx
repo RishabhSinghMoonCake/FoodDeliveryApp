@@ -6,6 +6,7 @@ import Cart from './pages/Cart/Cart.jsx'
 import Footer from './components/Footer/Footer.jsx'
 import Login from './components/LoginPopUp/Login.jsx'
 import Navbar from './components/Navbar/navbar.jsx'
+import PlaceOrder from './pages/PlaceOrder/PlaceOrder.jsx'
 function App() {
 
   const [showLogin, setShowLogin]  = useState(false)
@@ -18,6 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home/>}/>
           <Route path='/cart' element={<Cart/>}/>
+          <Route path='/order' element={<PlaceOrder/>}/>
         </Routes>
       </div>
       <Footer/>
