@@ -10,9 +10,9 @@ const ExploreMenu = ({category,setCategory}) => {
       </p>
       <div className="explore-menu-list">
         {
-          menu_list.map((ele)=>{
+          menu_list.map((ele,index)=>{
             return(
-                <div onClick={()=>setCategory(prev=>prev===ele.menu_name?"All":ele.menu_name)} className="explore-menu-list-item">
+                <div key={index} onClick={()=>setCategory(prev=>prev===ele.menu_name?"All":ele.menu_name)} className="explore-menu-list-item">
                   <img className={category===ele.menu_name?"active":""} src={ele.menu_image} alt="" />
                   <p>{ele.menu_name}</p>
                 </div>
