@@ -46,11 +46,19 @@ const StoreContextProvider = (props) => {
     setFoodList(response.data.data)
   }
 
-  async function loadCartData(token)
-  {
-    const response = await axios.post(url+'/api/cart/get',{}, {headers:{token}})
-    setCartItems(response.data.cartData)
+  async function loadCartData(token) {
+    try {
+      const response = await axios.post(url + '/api/cart/get', {}, { headers: { token } });
+      const cartData = response.data.cartData;
+
+      // Safety check: fallback to empty object if undefined or null
+      setCartItems(cartData || {});
+    } catch (err) {
+      console.error('Failed to load cart data:', err);
+      setCartItems({}); // fallback on failure
+    }
   }
+
 
   useEffect(()=>{
     
