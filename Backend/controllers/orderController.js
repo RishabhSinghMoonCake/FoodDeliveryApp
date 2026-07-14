@@ -7,7 +7,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 //placing user order from frontend
 
 const placeOrder = async (req,res) => {
-  const frontendUrl = 'https://khaanpann-frontend.onrender.com'
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173'
   try {
     const newOrder = new orderModel({
       userId:req.body.userId,
@@ -16,7 +16,6 @@ const placeOrder = async (req,res) => {
       address:req.body.address
     })
     await newOrder.save()
-    await userModel.findByIdAndUpdate(req.body.userId, {cartData:{}})
 
     const line_items = req.body.items.map((item)=>(
       {
@@ -45,8 +44,9 @@ const placeOrder = async (req,res) => {
     const session = await stripe.checkout.sessions.create({
       line_items:line_items,
       mode:'payment',
-      success_url:`${frontendUrl}/verify?success=true&orderId=${newOrder._id}`,
-      cancel_url:`${frontendUrl}/verify?success=false&orderId=${newOrder._id}`,
+      success_url:`${frontendUrl}/verify?orderId=${newOrder._id}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url:`${frontendUrl}/verify?orderId=${newOrder._id}`,
+      metadata: { orderId: newOrder._id.toString(), userId: req.body.userId },
       
     })
 
@@ -60,19 +60,19 @@ const placeOrder = async (req,res) => {
 
 async function verifyOrder(req,res)
 {
-  const {orderId , success} = req.body
+  const {orderId, sessionId} = req.body
   try
   {
-    if(success==='true')
-    {
-      await orderModel.findByIdAndUpdate(orderId,{payment:true})
-      res.json({success:true, message:"paid"})
+    const order = await orderModel.findById(orderId)
+    if (!order || order.userId !== req.user.id) return res.status(404).json({success:false, message:'Order not found'})
+    if (!sessionId) return res.json({success:false, message:'Payment was cancelled'})
+    const session = await stripe.checkout.sessions.retrieve(sessionId)
+    if (session.payment_status !== 'paid' || session.metadata.orderId !== orderId) {
+      return res.json({success:false, message:'Payment has not completed'})
     }
-    else
-    {
-      await orderModel.findByIdAndDelete(orderId)
-      res.json({success:false,message:'Not Paid'})
-    }
+    await orderModel.findByIdAndUpdate(orderId,{payment:true})
+    await userModel.findByIdAndUpdate(req.user.id, {cartData:{}})
+    res.json({success:true, message:"Payment confirmed"})
   }
   catch(error)
   {

@@ -33,3 +33,8 @@ hr{
 .cursor{
   cursor: pointer;
 }
+
+.admin-login { min-height: 100vh; display: grid; place-items: center; background: #f7f7f7; }
+.admin-login-form { width: min(360px, calc(100% - 32px)); display: grid; gap: 14px; padding: 28px; background: white; border: 1px solid #ddd; border-radius: 8px; }
+.admin-login-form input, .admin-login-form button { padding: 11px; font: inherit; }
+.admin-login-form button { border: 0; background: tomato; color: white; cursor: pointer; }

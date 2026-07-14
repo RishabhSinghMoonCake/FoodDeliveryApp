@@ -12,3 +12,12 @@
 .navbar .profile{
   width: 40px;
 }
+
+.navbar button.profile{
+  width: auto;
+  padding: 8px 12px;
+  border: 1px solid #999;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+}

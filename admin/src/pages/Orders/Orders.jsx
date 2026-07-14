@@ -4,13 +4,14 @@ import { useState } from 'react'
 import axios from 'axios'
 import { useEffect } from 'react'
 import {assets} from '../../assets/admin_assets/assets.js'
+import { adminHeaders } from '../../api'
 const Orders = ({url}) => {
 
   const [orders,setOrders] = useState([])
 
   async function fetchAllOrders()
   {
-    const response = await axios.get(url+'/api/order/list')
+    const response = await axios.get(url+'/api/order/list', {headers: adminHeaders()})
     if(response.data.data)
     {
       setOrders(response.data.data)
@@ -29,7 +30,7 @@ const Orders = ({url}) => {
     const response = await axios.post(url+'/api/order/status', {
       orderId,
       status:event.target.value
-    })
+    }, {headers: adminHeaders()})
 
     if(response.data.success)
     {

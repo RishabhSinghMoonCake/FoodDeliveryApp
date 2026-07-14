@@ -1,11 +1,12 @@
 import { createContext, useEffect, useState } from "react";
-import { food_list } from "../assets/frontend_assets/assets";
 import axios from "axios";
 export const StoreContext = createContext(null);
 const StoreContextProvider = (props) => {
 
   const [cartItems, setCartItems] = useState({});
-  const url = 'https://khaanpaan.onrender.com'
+  // Empty in development: Vite proxies /api and /images to the local backend.
+  // Set VITE_API_URL to the deployed backend URL in production.
+  const url = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
   const [token,setToken] = useState('')
   const [food_list, setFoodList] = useState([])
   const addToCart = async (itemId) => {
@@ -33,7 +34,7 @@ const StoreContextProvider = (props) => {
     for (const item in cartItems) {
       if (cartItems[item] > 0) {
         let itemInfo = food_list.find((product) => product._id === item)
-        totalAmount += itemInfo.price * cartItems[item]
+        if (itemInfo) totalAmount += itemInfo.price * cartItems[item]
       }
       
     }
@@ -42,8 +43,13 @@ const StoreContextProvider = (props) => {
 
   async function fetchFoodList()
   {
-    const response = await axios.get(url+'/api/food/list')
-    setFoodList(response.data.data)
+    try {
+      const response = await axios.get(url+'/api/food/list')
+      setFoodList(response.data.success ? response.data.data : [])
+    } catch (error) {
+      console.error('Failed to load food list:', error)
+      setFoodList([])
+    }
   }
 
   async function loadCartData(token) {

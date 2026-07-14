@@ -8,15 +8,16 @@ import axios from 'axios'
 const Verify = () => {
 
 
-  const [searchParams, setSetParams] = useSearchParams()
-  const success = searchParams.get('success')
+  const [searchParams] = useSearchParams()
   const orderId = searchParams.get('orderId')
+  const sessionId = searchParams.get('session_id')
   
   const {url,token} = useContext(StoreContext)
   const navigate = useNavigate()
 
   const verifyPayment = async ()=>{
-    const response = await axios.post(url + '/api/order/verify',{success,orderId})
+    if (!token || !orderId) return navigate('/')
+    const response = await axios.post(url + '/api/order/verify',{orderId, sessionId}, {headers:{token}})
     console.log(response.data)
     if(response.data.success)
     {
@@ -30,7 +31,7 @@ const Verify = () => {
 
   useEffect(()=>{
     verifyPayment()
-  }, [])
+  }, [token, orderId, sessionId])
 
   return (
     <div className='verify'>

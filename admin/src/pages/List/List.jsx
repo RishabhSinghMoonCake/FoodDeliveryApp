@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './List.css'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { adminHeaders } from '../../api'
 const List = ({url}) => {
   
   const [list, setList] = useState([])
@@ -19,7 +20,7 @@ const List = ({url}) => {
   }
 
   async function removeFood(foodId) {
-    const response = await axios.post(`${url}/api/food/remove`, {id:foodId})
+    const response = await axios.post(`${url}/api/food/remove`, {id:foodId}, {headers: adminHeaders()})
     await fetchList()
     if(response.data.success)
     {

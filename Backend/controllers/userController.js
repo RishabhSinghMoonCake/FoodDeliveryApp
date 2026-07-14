@@ -24,7 +24,19 @@ async function loginUser(req, res)
 }
 
 const createToken = (id)=>{
-  return jwt.sign({id} , process.env.JWT_SECRET)
+  return jwt.sign({id, role: 'customer'} , process.env.JWT_SECRET, { expiresIn: '7d' })
+}
+
+async function adminLogin(req, res) {
+  const { email, password } = req.body
+  if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
+    return res.status(503).json({ success: false, message: 'Admin login is not configured on the server' })
+  }
+  if (email !== process.env.ADMIN_EMAIL || password !== process.env.ADMIN_PASSWORD) {
+    return res.status(401).json({ success: false, message: 'Invalid admin credentials' })
+  }
+  const token = jwt.sign({ id: 'admin', role: 'admin' }, process.env.JWT_SECRET, { expiresIn: '8h' })
+  res.json({ success: true, token })
 }
 
 async function registerUser(req,res)
@@ -72,4 +84,4 @@ async function registerUser(req,res)
   }
 }
 
-export {loginUser,registerUser}
+export {loginUser,registerUser,adminLogin}

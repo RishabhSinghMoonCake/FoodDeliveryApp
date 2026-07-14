@@ -3,6 +3,7 @@ import {assets} from '../../assets/admin_assets/assets.js'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { adminHeaders } from '../../api'
 
 
 const Add = ({url}) => {
@@ -33,7 +34,7 @@ const Add = ({url}) => {
     formData.append("image", image)
 
     
-    const response = await axios.post(`${url}/api/food/add`, formData)
+    const response = await axios.post(`${url}/api/food/add`, formData, {headers: adminHeaders()})
     if(response.data.success)
     {
       setData({
