@@ -9,6 +9,7 @@ import Navbar from './components/Navbar/navbar.jsx'
 import PlaceOrder from './pages/PlaceOrder/PlaceOrder.jsx'
 import Verify from './pages/Verify/Verify.jsx'
 import MyOrders from './pages/myOrders/MyOrders.jsx'
+import Profile from './pages/Profile/Profile.jsx'
 function App() {
 
   const [showLogin, setShowLogin]  = useState(false)
@@ -24,6 +25,7 @@ function App() {
           <Route path='/order' element={<PlaceOrder/>}/>
           <Route path='/verify' element={<Verify/>}/>
           <Route path='/myorders' element={<MyOrders/>}/>
+          <Route path='/profile' element={<Profile/>}/>
         </Routes>
       </div>
       <Footer/>

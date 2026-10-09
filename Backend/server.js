@@ -8,7 +8,8 @@ import orderRouter from './routes/orderRoute.js'
 import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
-
+import { Server } from 'socket.io'
+import http from 'http'
 dotenv.config()
 
 const app = express()
@@ -23,6 +24,29 @@ app.use(cors({
     return callback(new Error('Origin is not allowed by CORS'))
   }
 }))
+
+const server = http.createServer(app)
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins.length > 0 ? allowedOrigins : "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
+  }
+})
+
+app.set('io', io)
+
+io.on('connection', (socket) => {
+  console.log('A user connected:', socket.id)
+  
+  // User/Admin can join a room based on their ID or role
+  socket.on('joinRoom', (roomId) => {
+    socket.join(roomId)
+  })
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id)
+  })
+})
 
 //db connection
 connectDB()
@@ -42,7 +66,11 @@ app.get('/', (req,res)=>{
 
 
 
-app.listen(PORT, ()=>{
-  console.log(`Server has started at port ${PORT}`)
-})
+if (process.env.NODE_ENV !== 'test') {
+  server.listen(PORT, ()=>{
+    console.log(`Server has started at port ${PORT}`)
+  })
+}
+
+export default app
 

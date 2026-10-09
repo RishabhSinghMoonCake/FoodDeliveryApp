@@ -8,7 +8,7 @@ const FoodItem = ({ id, name, price, description, image }) => {
   return (
     <div className='food-item'>
       <div className="food-item-img-container">
-        <img className='food-item-img' src={url + '/images/'+image} alt="" />
+        <img className='food-item-img' src={image.startsWith('http') ? image : url + '/images/'+image} alt="" />
         {
           cartItems && cartItems[id] > 0
             ? <div className='food-item-counter'>

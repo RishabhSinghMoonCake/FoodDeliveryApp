@@ -33,22 +33,32 @@ const Add = ({url}) => {
     formData.append("category", data.category)
     formData.append("image", image)
 
-    
-    const response = await axios.post(`${url}/api/food/add`, formData, {headers: adminHeaders()})
-    if(response.data.success)
-    {
-      setData({
-      name:"",
-      description:"",
-      price:"",
-      category:"Salad",
-      })
-      setImage(false)
-      toast.success(response.data.message)
-    }
-    else
-    {
-      toast.error(response.data.message)
+    try {
+      const response = await axios.post(`${url}/api/food/add`, formData, {headers: adminHeaders()})
+      if(response.data.success)
+      {
+        setData({
+        name:"",
+        description:"",
+        price:"",
+        category:"Salad",
+        })
+        setImage(false)
+        toast.success(response.data.message)
+      }
+      else
+      {
+        toast.error(response.data.message)
+      }
+    } catch (err) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        toast.error('Session expired. Please log in again.')
+        localStorage.removeItem('adminToken')
+        window.location.reload()
+      } else {
+        toast.error('Failed to add food')
+        console.error(err)
+      }
     }
   }
 

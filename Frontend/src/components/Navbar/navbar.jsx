@@ -8,7 +8,7 @@ const Navbar = ({setShowLogin}) => {
 
   const [basketIconActive, setBasketIconActive] = useState(false)
 
-  const {getTotalCartAmount,token,setToken} = useContext(StoreContext)
+  const {getTotalCartAmount,token,setToken,setCartItems} = useContext(StoreContext)
 
   function handleBasketIconToggle()
   {
@@ -21,6 +21,7 @@ const Navbar = ({setShowLogin}) => {
   {
     localStorage.removeItem('token')
     setToken('')
+    setCartItems({})
     navigate('/')
   }
 
@@ -44,6 +45,8 @@ const Navbar = ({setShowLogin}) => {
         {!token?<button onClick={()=>setShowLogin(true)}>sign in</button>:<div className='navbar-profile'>
           <img src={assets.profile_icon} alt="" />
           <ul className="navbar-profile-dropdown">
+            <li onClick={()=>navigate('/profile')}><img src={assets.profile_icon} alt="" /><p>Profile</p></li>
+            <hr />
             <li onClick={()=>navigate('/myorders')}><img src={assets.bag_icon} alt="" /><p>Orders</p></li>  
             <hr />
             <li onClick={logout}><img src={assets.logout_icon} alt="" /><p>Logout</p></li>

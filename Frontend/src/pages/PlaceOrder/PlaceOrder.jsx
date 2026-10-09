@@ -42,7 +42,8 @@ const PlaceOrder = () => {
     let orderData = {
       address:data,
       items:orderItems,
-      amount:getTotalCartAmount()+2
+      amount:getTotalCartAmount()+2,
+      origin: window.location.origin
     }
 
     let response = await axios.post(url + "/api/order/place", orderData, {headers:{token}})
@@ -109,7 +110,7 @@ const PlaceOrder = () => {
                 <b>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 2}</b>
               </div>
             </div>
-            <button type='submit' onClick={()=>navigate('/order')}>Proceed To Payment</button>
+            <button type='submit'>Proceed To Payment</button>
           </div>
       </div>
     </form>

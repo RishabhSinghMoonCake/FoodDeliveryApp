@@ -7,10 +7,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 //placing user order from frontend
 
 const placeOrder = async (req,res) => {
-  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173'
+  const frontendUrl = req.body.origin || process.env.FRONTEND_URL || 'http://localhost:5173'
   try {
     const newOrder = new orderModel({
-      userId:req.body.userId,
+      userId:req.user.id,
       items:req.body.items,
       amount:req.body.amount,
       address:req.body.address
@@ -46,7 +46,7 @@ const placeOrder = async (req,res) => {
       mode:'payment',
       success_url:`${frontendUrl}/verify?orderId=${newOrder._id}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url:`${frontendUrl}/verify?orderId=${newOrder._id}`,
-      metadata: { orderId: newOrder._id.toString(), userId: req.body.userId },
+      metadata: { orderId: newOrder._id.toString(), userId: req.user.id },
       
     })
 
@@ -72,6 +72,13 @@ async function verifyOrder(req,res)
     }
     await orderModel.findByIdAndUpdate(orderId,{payment:true})
     await userModel.findByIdAndUpdate(req.user.id, {cartData:{}})
+    
+    const updatedOrder = await orderModel.findById(orderId)
+    const io = req.app.get('io')
+    if(io) {
+      io.to('admin').emit('newOrder', updatedOrder)
+    }
+
     res.json({success:true, message:"Payment confirmed"})
   }
   catch(error)
@@ -86,7 +93,7 @@ async function verifyOrder(req,res)
 async function userOrders(req,res)
 {
   try {
-    const orders = await orderModel.find({userId:req.body.userId})
+    const orders = await orderModel.find({userId:req.user.id})
     res.json({success:true,data:orders})
   } catch (error) {
     console.log(error)
@@ -108,7 +115,13 @@ async function listOrders(req,res)
 async function updateStatus(req,res)
 {
   try {
-    await orderModel.findByIdAndUpdate(req.body.orderId,{status:req.body.status})
+    const order = await orderModel.findByIdAndUpdate(req.body.orderId,{status:req.body.status}, {new: true})
+    
+    const io = req.app.get('io')
+    if(io && order) {
+      io.to(order.userId.toString()).emit('orderStatusUpdate', order)
+    }
+
     res.json({success:true,message:'status Updated'})
   } catch (error) {
     console.log(error)

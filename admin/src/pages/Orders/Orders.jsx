@@ -2,6 +2,7 @@ import './Orders.css'
 import {toast} from 'react-toastify'
 import { useState } from 'react'
 import axios from 'axios'
+import { io } from 'socket.io-client'
 import { useEffect } from 'react'
 import {assets} from '../../assets/admin_assets/assets.js'
 import { adminHeaders } from '../../api'
@@ -11,34 +12,79 @@ const Orders = ({url}) => {
 
   async function fetchAllOrders()
   {
-    const response = await axios.get(url+'/api/order/list', {headers: adminHeaders()})
-    if(response.data.data)
-    {
-      setOrders(response.data.data)
-      console.log(response.data.data)
-    }
-    else{
-      toast.error('error')
+    try {
+      const response = await axios.get(url+'/api/order/list', {headers: adminHeaders()})
+      if(response.data.data)
+      {
+        setOrders(response.data.data)
+        console.log(response.data.data)
+      }
+      else{
+        toast.error('error fetching orders')
+      }
+    } catch (err) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        toast.error('Session expired. Please log in again.')
+        localStorage.removeItem('adminToken')
+        window.location.reload()
+      } else {
+        toast.error('Failed to fetch orders')
+        console.error(err)
+      }
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     fetchAllOrders()
-  },[])
+
+    const socketEndpoint = url || 'http://localhost:5002'
+    const socket = io(socketEndpoint, {
+      transports: ['websocket', 'polling']
+    })
+
+    const joinAdmin = () => {
+      socket.emit('joinRoom', 'admin')
+    }
+
+    socket.on('connect', joinAdmin)
+    if (socket.connected) {
+      joinAdmin()
+    }
+    
+    socket.on('newOrder', (newOrder) => {
+      setOrders((prev) => [newOrder, ...prev])
+      toast.info('New order received!')
+    })
+
+    return () => {
+      socket.disconnect()
+    }
+  }, [url])
 
   async function statusHandler(event,orderId)
   {
-    const response = await axios.post(url+'/api/order/status', {
-      orderId,
-      status:event.target.value
-    }, {headers: adminHeaders()})
+    try {
+      const response = await axios.post(url+'/api/order/status', {
+        orderId,
+        status:event.target.value
+      }, {headers: adminHeaders()})
 
-    if(response.data.success)
-    {
-      await fetchAllOrders()
-    }
-    else
-    {
-      console.log(response.message)
+      if(response.data.success)
+      {
+        await fetchAllOrders()
+      }
+      else
+      {
+        console.log(response.data.message)
+      }
+    } catch (err) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        toast.error('Session expired. Please log in again.')
+        localStorage.removeItem('adminToken')
+        window.location.reload()
+      } else {
+        toast.error('Failed to update status')
+        console.error(err)
+      }
     }
   }
 
