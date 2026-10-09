@@ -13,6 +13,24 @@ A comprehensive Food Delivery Application built with the MERN stack (MongoDB, Ex
 
 ## 🏗 Architecture & Tech Choices
 
+### System Architecture
+```mermaid
+graph TD
+    Client[Frontend / Admin Panel React Apps]
+    API[Express.js Node Backend]
+    DB[(MongoDB Atlas)]
+    Socket[Socket.IO Realtime Engine]
+    Cloudinary[Cloudinary CDN]
+    Stripe[Stripe Payment Gateway]
+
+    Client <-->|REST API| API
+    Client <-->|WebSockets| Socket
+    Socket <--> API
+    API <-->|Mongoose ODM| DB
+    API -->|Upload Images| Cloudinary
+    API <-->|Checkout/Webhooks| Stripe
+```
+
 - **Frontend:** React + Vite. Vite provides instant HMR and faster builds. State is managed via React Context API (`StoreContext`).
 - **Backend:** Node.js + Express.
 - **Database:** MongoDB via Mongoose.
@@ -76,6 +94,7 @@ npm run test
 - `POST /api/user/register` - Register a new user
 - `POST /api/user/login` - Authenticate a user
 - `POST /api/user/admin/login` - Authenticate admin
+- `GET /api/user/profile` - (Auth) Get current user's profile
 
 ### Food Routes
 - `POST /api/food/add` - (Admin) Add new food item (multipart/form-data)
