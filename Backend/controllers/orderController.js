@@ -65,6 +65,11 @@ async function verifyOrder(req,res)
   {
     const order = await orderModel.findById(orderId)
     if (!order || order.userId !== req.user.id) return res.status(404).json({success:false, message:'Order not found'})
+    // If already paid, return early and do not re-emit to the kitchen
+    if (order.payment) {
+      return res.json({ success: true, message: 'Order already processed' })
+    }
+
     if (!sessionId) return res.json({success:false, message:'Payment was cancelled'})
     const session = await stripe.checkout.sessions.retrieve(sessionId)
     if (session.payment_status !== 'paid' || session.metadata.orderId !== orderId) {
